@@ -1,0 +1,43 @@
+#!/bin/sh
+
+# WARNING: Do not use this script in production systems.  It is meant
+# as a learning resource.
+#
+# WARNING: If you add this script without also adding a service to
+# check target service state on system start and a periodic service
+# checker, your LED and service status may get out-of-sync.
+#
+# WARNING: If you add this script without modifying the monitored
+# service, enabling/disabling the service without pressing the button
+# will lead to out-of-sync status.
+#
+# WARNING: There is no indication if this script fails because of
+# button or LED API changes
+#
+NAME=dropbear
+
+running_check() {
+	local service_name="$1"
+
+	/etc/init.d/${service_name} running
+}
+
+if [ "$ACTION" = "released" ] && [ "$BUTTON" = "wps" ]; then
+	# If the button was pressed for less than 3 seconds, toggle
+	# the service
+	if [ "$SEEN" -lt 3 ] ; then
+		if running_check ${NAME} ; then
+			echo "Found ${NAME} running"
+			echo "Stopping ${NAME}"
+			/etc/init.d/${NAME} stop
+			echo "0" > /sys/class/leds/green:wps/brightness
+		else
+			echo "Didn't find ${NAME} running"
+			echo "Starting ${NAME}"
+			/etc/init.d/${NAME} start
+			echo "1" > /sys/class/leds/green:wps/brightness
+		fi
+	fi
+fi
+
+return 0
