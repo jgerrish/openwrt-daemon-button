@@ -1,5 +1,6 @@
 # openwrt-daemon-button: A Small Primer on Common Service Management Issues #
 
+Version 0.2.0
 
 # Introduction #
 
@@ -127,13 +128,23 @@ rc.local file, we should scan the existing rc.local file and insert
 our code if it hasn't been inserted already.  This is made difficult
 by the text editing tools available on a busybox-oriented system.
 
+### Changes ###
+
+2025-07-10  Joshua Gerrish  <jgerrish@gmail.com>
+
+	* rc.local: Simplify rc.local update to a single line.
+
+This script was updated to have a single-line command with the version
+number appended.  This will help with later versions that
+automatically update the rc.local script.  And it helps users manage
+their rc.local script if they have a lot of customization.
 
 ## Customizing the service to update the LED ##
 
 TODO
 
 Next, the dropbear service itself must be customized to change the LED
-state if it's state is changed.
+state if its state is changed.
 
 
 ## periodic checker script ##
@@ -180,9 +191,20 @@ directory on your OpenWRT device.
 Backup your copy of the wps script to somewhere safe.  Then copy the
 wps file to /etc/rc.button
 
-The rc.local script should be appended to your /etc/r.local
+The rc.local script should be appended to your /etc/rc.local
 
 First make sure the exit 0 is removed from your existing rc.local
 
 **WARNING** Not removing the exit 0 from your existing rc.local will result in
 LED state being out-of-sync with service state.  This is a security risk.
+
+
+Copy sync-led into /etc/init.d/
+
+
+# Changes #
+
+2025-07-10  Joshua Gerrish  <jgerrish@gmail.com>
+
+	* rc.local: Simplify rc.local update to a single line.
+	* sync-led: Move most of rc.local into sync-led
