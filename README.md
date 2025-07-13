@@ -226,8 +226,8 @@ that could choke on a carefully crafted file, or worse.
 
 The default ash shell on OpenWRT supports the -e and -n command line
 options, so crafting arbitrary byte sequences is possible.
- 
+
     * rc.local: Simplify rc.local update to a single line.
     * README.md bump version
-	* sync-led: Wrap most of the script in start_service and make it conform to 
+    * sync-led: Wrap most of the script in start_service and make it conform to procd standards.
 
