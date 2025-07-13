@@ -1,6 +1,6 @@
 # openwrt-daemon-button: A Small Primer on Common Service Management Issues #
 
-Version 0.2.0
+Version 0.3.0
 
 # Introduction #
 
@@ -208,3 +208,26 @@ Copy sync-led into /etc/init.d/
 
 	* rc.local: Simplify rc.local update to a single line.
 	* sync-led: Move most of rc.local into sync-led
+
+2025-07-13  Joshua Gerrish  <jgerrish@gmail.com>
+
+Ironically fixed a bug that revealed a backup bug in OpenWRT
+
+sync-led was an improper procd init script.  It didn't include
+#!/bin/sh /etc/rc.common line and it didn't include a start\_service
+wrapper for the main code.
+
+This actually revealed a bug in OpenWRT:
+[sysupgrade -b produces invalid tar.gz file](https://github.com/openwrt/openwrt/issues/14931)
+
+It's a interesting bug.  There are a ton of network-based and
+host-based virus scanners and intrusion detection systems out there
+that could choke on a carefully crafted file, or worse.
+
+The default ash shell on OpenWRT supports the -e and -n command line
+options, so crafting arbitrary byte sequences is possible.
+ 
+    * rc.local: Simplify rc.local update to a single line.
+    * README.md bump version
+	* sync-led: Wrap most of the script in start_service and make it conform to 
+

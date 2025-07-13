@@ -1,10 +1,6 @@
-if [ "$1" != "" ] ; then
-    OPENWRT_DAEMON_BUTTON_SERVICE_NAME=$1
-else
-    # No argument passed, fail with an error message
-    echo "Argument one to $0 should be the service name to manage"
-    exit 1
-fi
+#!/bin/sh /etc/rc.common
+
+USE_PROCD=1
 
 running_check() {
 	local service_name="$1"
@@ -12,28 +8,38 @@ running_check() {
 	/etc/init.d/${service_name} running
 }
 
-if [ "$3" != "" ] ; then
-    # The status of running service isn't always immediately available
-    # on system boot
-    echo "Sleeping for $3 seconds to wait for service"
-    sleep $3
-else
-    echo "Sleeping for default 20 seconds to wait for service"
-    sleep 20
-fi
+start_service() {
+	if [ "$1" != "" ] ; then
+		OPENWRT_DAEMON_BUTTON_SERVICE_NAME=$1
+	else
+		# No argument passed, fail with an error message
+		echo "Argument one to $0 should be the service name to manage"
+		exit 1
+	fi
 
-if [ "$2" != "" ] ; then
-    echo "Using LED $2"
-    led=$2
-else
-    echo "Using default LED green:wps"
-    led="green:wps"
-fi
+	if [ "$3" != "" ] ; then
+		# The status of running service isn't always immediately available
+		# on system boot
+		echo "Sleeping for $3 seconds to wait for service"
+		sleep $3
+	else
+		echo "Sleeping for default 20 seconds to wait for service"
+		sleep 20
+	fi
 
-if running_check ${OPENWRT_DAEMON_BUTTON_SERVICE_NAME} ; then
-	echo "Found ${OPENWRT_DAEMON_BUTTON_SERVICE_NAME} running"
-	echo "1" > /sys/class/leds/$led/brightness
-else
-	echo "Didn't find ${OPENWRT_DAEMON_BUTTON_SERVICE_NAME} running"
-	echo "0" > /sys/class/leds/$led/brightness
-fi
+	if [ "$2" != "" ] ; then
+		echo "Using LED $2"
+		led=$2
+	else
+		echo "Using default LED green:wps"
+		led="green:wps"
+	fi
+
+	if running_check ${OPENWRT_DAEMON_BUTTON_SERVICE_NAME} ; then
+		echo "Found ${OPENWRT_DAEMON_BUTTON_SERVICE_NAME} running"
+		echo "1" > /sys/class/leds/$led/brightness
+	else
+		echo "Didn't find ${OPENWRT_DAEMON_BUTTON_SERVICE_NAME} running"
+		echo "0" > /sys/class/leds/$led/brightness
+	fi
+}

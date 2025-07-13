@@ -12,6 +12,6 @@
 # WARNING: make sure you remove exit 0 from your existing rc.local
 # file or this script will NOT be run
 
-[ -f /etc/init.d/sync-led] && { /etc/init.d/sync-led dropbear green:wps 20 } # openwrt-daemon-button-0.2.0
+[ -f /etc/init.d/sync-led] && { /etc/init.d/sync-led start dropbear green:wps 20 } # openwrt-daemon-button-0.3.0
 
 exit 0
